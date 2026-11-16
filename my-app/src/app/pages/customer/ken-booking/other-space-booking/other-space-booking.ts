@@ -2,21 +2,49 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../../core/auth.service';
-import { KenBookingSpace, KenBookingState, kenMoney, kenNextDay } from '../booking-state';
+import { KenBookingDraft, KenBookingSpace, KenBookingState, kenMoney, kenNextDay } from '../booking-state';
 import { KenAvailabilityService } from '../availability.service';
 
 @Component({
   selector: 'app-ken-other-space-booking',
   standalone: false,
   templateUrl: './other-space-booking.html',
-  styleUrl: './other-space-booking.css'
+  styleUrl: './other-space-booking.css',
 })
 export class KenOtherSpacePage implements OnInit {
-  space?: KenBookingSpace;
-  date = kenNextDay();
-  startHour = 9;
-  guests = 1;
-  duration = 1;
+  spaceId = '';
+  get space(): KenBookingSpace | undefined {
+    return this.state.getSpace(this.spaceId) || this.state.spacesSignal().find((s) => s.id === this.spaceId);
+  }
+
+  get date(): string {
+    return this.state.draft().date;
+  }
+  set date(val: string) {
+    this.changeDate(val);
+  }
+
+  get startHour(): number {
+    return this.state.draft().startHour;
+  }
+  set startHour(val: number) {
+    this.changeHour(val);
+  }
+
+  get guests(): number {
+    return this.state.draft().guests;
+  }
+  set guests(val: number) {
+    this.changeGuests(val);
+  }
+
+  get duration(): number {
+    return this.state.draft().hours;
+  }
+  set duration(val: number) {
+    this.chooseDuration(val);
+  }
+
   feedback = '';
   showAddons = false;
   checkingSession = false;
@@ -36,35 +64,71 @@ export class KenOtherSpacePage implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
+    this.state.loadClusterRecommendations(true, () => this.changeDetector.markForCheck());
+    this.route.paramMap.subscribe((params) => {
       const id = params.get('id') || '';
-      this.space = this.state.getSpace(id);
+      this.spaceId = id;
       if (!this.space) return;
-      if (this.state.draft().spaceId !== id) this.state.set({ spaceId: id });
+
       const current = this.state.draft();
-      this.date = current.date;
-      this.startHour = current.startHour;
-      this.guests = current.guests;
-      this.duration = current.hours;
-      this.startHour = Math.min(this.startHour, 22 - this.duration);
+      const patch: Partial<KenBookingDraft> = {};
+
+      if (current.spaceId !== id) {
+        patch.spaceId = id;
+        const minG = this.space.minGuests;
+        const maxG = this.space.maxGuests;
+        if (current.guests < minG || current.guests > maxG) {
+          patch.guests = Math.max(minG, Math.min(maxG, current.guests));
+        }
+        if (!this.space.rates.some((r) => r.hours === current.hours) && this.space.rates.length > 0) {
+          patch.hours = this.space.rates[0].hours;
+        }
+      }
+
+      const effectiveHours = patch.hours ?? current.hours;
+      const effectiveStartHour = patch.startHour ?? current.startHour;
+      if (effectiveStartHour + effectiveHours > 22) {
+        patch.startHour = Math.max(8, 22 - effectiveHours);
+      }
+
+      if (!current.date || current.date < this.minDate) {
+        patch.date = this.minDate;
+      }
+
+      if (Object.keys(patch).length > 0) {
+        this.state.set(patch);
+      }
+
       this.feedback = '';
       if (this.route.snapshot.queryParamMap.get('bookingStep') === 'addons') {
         this.restoreAddonsStep();
       }
+      this.changeDetector.markForCheck();
     });
   }
 
-  get minDate(): string { return kenNextDay(); }
-  get isFocusZone(): boolean {
-    return this.space?.id === 'work' || !!this.space?.id.startsWith('meeting') || this.space?.id === 'focus';
+  get minDate(): string {
+    return kenNextDay();
   }
-  get zoneLabel(): string { return this.isFocusZone ? 'KÉN TẬP TRUNG' : 'KÉN TÁI TẠO'; }
+  get isFocusZone(): boolean {
+    return (
+      this.space?.id === 'work' ||
+      !!this.space?.id.startsWith('meeting') ||
+      this.space?.id === 'focus'
+    );
+  }
+  get zoneLabel(): string {
+    return this.isFocusZone ? 'KÉN TẬP TRUNG' : 'KÉN TÁI TẠO';
+  }
+  get tierDiscountLabel(): string {
+    return this.state.tierDiscountLabel || 'Ưu đãi thành viên';
+  }
 
   get guestOptions(): number[] {
     if (!this.space) return [];
     return Array.from(
       { length: this.space.maxGuests - this.space.minGuests + 1 },
-      (_, i) => this.space!.minGuests + i
+      (_, i) => this.space!.minGuests + i,
     );
   }
 
@@ -87,44 +151,53 @@ export class KenOtherSpacePage implements OnInit {
   }
 
   chooseDuration(hours: number): void {
-    this.state.set({ hours });
-    const d = this.state.draft();
-    this.duration = d.hours;
-    this.startHour = d.startHour;
-    this.guests = d.guests;
+    const currentStartHour = this.state.draft().startHour;
+    let nextStartHour = currentStartHour;
+    if (nextStartHour + hours > 22) {
+      nextStartHour = Math.max(8, 22 - hours);
+    }
+    this.state.set({ hours, startHour: nextStartHour });
     this.showAddons = false;
     this.feedback = '';
+    this.changeDetector.markForCheck();
   }
 
   changeGuests(guests: number): void {
-    this.state.set({ guests });
-    const d = this.state.draft();
-    this.guests = d.guests;
+    this.state.set({ guests: Number(guests) });
     this.showAddons = false;
     this.feedback = '';
+    this.changeDetector.markForCheck();
   }
 
   changeDate(date: string): void {
     this.state.set({ date });
-    this.date = this.state.draft().date;
     this.showAddons = false;
     this.feedback = '';
+    this.changeDetector.markForCheck();
   }
 
   changeHour(hour: number): void {
-    this.state.set({ startHour: hour });
-    this.startHour = this.state.draft().startHour;
+    const duration = this.duration;
+    let nextHour = Number(hour);
+    if (!Number.isFinite(nextHour)) return;
+    if (nextHour + duration > 22) {
+      nextHour = Math.max(8, 22 - duration);
+    }
+    this.state.set({ startHour: nextHour });
     this.showAddons = false;
     this.feedback = '';
+    this.changeDetector.markForCheck();
   }
 
   get filteredExtras() {
     return this.extraCategory === 'all'
       ? this.state.extras
-      : this.state.extras.filter(extra => extra.category === this.extraCategory);
+      : this.state.extras.filter((extra) => extra.category === this.extraCategory);
   }
 
-  extrasCount(id: string): number { return this.state.draft().extras[id] || 0; }
+  extrasCount(id: string): number {
+    return this.state.draft().extras[id] || 0;
+  }
   changeExtra(id: string, delta: number): void {
     this.state.setExtra(id, this.extrasCount(id) + delta);
   }
@@ -133,7 +206,9 @@ export class KenOtherSpacePage implements OnInit {
     if (!this.space) {
       this.ngOnInit();
     }
-    const basePath = (this.router.url || `/booking/${this.space?.id || this.state.draft().spaceId}`).split('?')[0];
+    const basePath = (
+      this.router.url || `/booking/${this.space?.id || this.state.draft().spaceId}`
+    ).split('?')[0];
     this.router.navigate(['/booking/drinks'], {
       queryParams: { returnTo: `${basePath}?bookingStep=addons` },
     });
@@ -157,10 +232,12 @@ export class KenOtherSpacePage implements OnInit {
   }
 
   get timeOptions(): number[] {
-    return this.allHours.filter(hour => hour + this.duration <= 22);
+    return this.allHours.filter((hour) => hour + this.duration <= 22);
   }
 
-  get needsDrinks(): boolean { return this.state.requiredDrinkCount > 0; }
+  get needsDrinks(): boolean {
+    return this.state.requiredDrinkCount > 0;
+  }
   get drinksComplete(): boolean {
     return this.state.selectedDrinkCount === this.state.requiredDrinkCount;
   }
@@ -206,7 +283,8 @@ export class KenOtherSpacePage implements OnInit {
       guests: this.guests,
     });
     if (!this.state.isSlotValid) {
-      this.feedback = 'Vui lòng chọn ngày và giờ bắt đầu trong tương lai, cách hiện tại ít nhất 30 phút, và kết thúc trước 22:00.';
+      this.feedback =
+        'Vui lòng chọn ngày và giờ bắt đầu trong tương lai, cách hiện tại ít nhất 30 phút, và kết thúc trước 22:00.';
       return;
     }
     if (this.needsDrinks && !this.drinksComplete) {
@@ -218,9 +296,13 @@ export class KenOtherSpacePage implements OnInit {
 
   private restoreAddonsStep(): void {
     this.auth.ensureSession().subscribe({
-      next: user => {
-        if (user) this.verifyAvailability(() => this.showAddons = true);
-        else this.goToLogin();
+      next: (user) => {
+        if (user) {
+          this.state.loadClusterRecommendations(true, () => this.changeDetector.markForCheck());
+          this.verifyAvailability(() => (this.showAddons = true));
+        } else {
+          this.goToLogin();
+        }
       },
       error: () => {
         this.feedback = 'Không thể kiểm tra phiên đăng nhập. Vui lòng thử lại.';
@@ -237,9 +319,10 @@ export class KenOtherSpacePage implements OnInit {
   private requireSession(): void {
     this.checkingSession = true;
     this.auth.ensureSession().subscribe({
-      next: user => {
+      next: (user) => {
         this.checkingSession = false;
         if (user) {
+          this.state.loadClusterRecommendations(true, () => this.changeDetector.markForCheck());
           this.showAddons = true;
           this.feedback = '';
         } else {
@@ -259,7 +342,7 @@ export class KenOtherSpacePage implements OnInit {
     if (!this.space) return;
     this.checkingAvailability = true;
     this.availability.check(this.date, this.startHour, this.guests, this.duration).subscribe({
-      next: spaces => {
+      next: (spaces) => {
         this.checkingAvailability = false;
         const selected = this.availability.forSpace(this.space!.id, spaces);
         if (!this.availability.packageAvailable(selected, this.duration)) {
@@ -274,9 +357,10 @@ export class KenOtherSpacePage implements OnInit {
       error: (error: HttpErrorResponse) => {
         this.checkingAvailability = false;
         const message = error.error?.message ?? error.message;
-        this.feedback = typeof message === 'string'
-          ? message
-          : 'Không thể kiểm tra lịch lúc này. Vui lòng thử lại.';
+        this.feedback =
+          typeof message === 'string'
+            ? message
+            : 'Không thể kiểm tra lịch lúc này. Vui lòng thử lại.';
         this.changeDetector.markForCheck();
       },
     });

@@ -97,6 +97,9 @@
               <button type="button" class="kf-btn kf-btn-gold" [disabled]="paying" (click)="payNow('SUCCESS')">
                 {{ paying ? 'Đang xử lý…' : 'Xác nhận đã thanh toán' }}
               </button>
+              <button type="button" class="kf-btn kf-btn-light" [disabled]="paying" (click)="payNow('FAILED')">
+                Giả lập thanh toán thất bại
+              </button>
             </div>
           }
         </section>
@@ -149,7 +152,8 @@
           </div>
           <hr>
           <div class="kf-sum-row"><span>Tạm tính</span><strong>{{ money(state.subtotal) }}</strong></div>
-          <div class="kf-sum-row"><span>Ưu đãi thành viên (5%)</span><strong>−{{ money(state.silverDiscount) }}</strong></div>
+          <div class="kf-sum-row" *ngIf="state.silverDiscount > 0"><span>{{ tierDiscountLabel }}</span><strong>−{{ money(state.silverDiscount) }}</strong></div>
+          <div class="kf-sum-row" *ngIf="state.voucherDiscount > 0"><span>Mã giảm giá</span><strong>−{{ money(state.voucherDiscount) }}</strong></div>
           <hr><div class="kf-sum-row kf-total"><strong>Tổng thanh toán</strong><strong>{{ money(state.total) }}</strong></div>
         </div>
       </section>

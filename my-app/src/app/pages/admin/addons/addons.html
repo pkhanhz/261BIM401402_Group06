@@ -10,7 +10,7 @@
   <div class="page-heading-row" data-name="Tiêu đề trang">
     <div class="heading-title-block" data-name="Giới thiệu">
       <h1 class="page-title">Sản phẩm &amp; Add-on</h1>
-      <p class="page-subtitle">Quản lý danh mục đồ uống, bánh ngọt, tiện ích bán kèm và chính sách hỗ trợ đồ uống theo gói</p>
+      <p class="page-subtitle">Quản lý danh mục thực đơn, đồ uống, bánh ngọt và tiện ích bán kèm</p>
     </div>
 
     <div class="heading-actions" data-name="Hành động">
@@ -23,32 +23,11 @@
     </div>
   </div>
 
-  <!-- Functional Tabs Navigation -->
-  <div class="page-tabs-bar" data-name="Tabs">
-    <button
-      type="button"
-      class="tab-btn"
-      [class.active]="mainTab === 'MENU'"
-      (click)="mainTab = 'MENU'"
-    >
-      Sản phẩm &amp; tiện ích ({{ totalCount }})
-    </button>
-    <button
-      type="button"
-      class="tab-btn"
-      [class.active]="mainTab === 'CONFIG'"
-      (click)="mainTab = 'CONFIG'"
-    >
-      Cấu hình hỗ trợ đồ uống 50.000đ &amp; Gói đi kèm
-    </button>
-  </div>
-
-  <!-- ==================== TAB 1: DANH MỤC SẢN PHẨM & ADD-ON ==================== -->
-  <ng-container *ngIf="mainTab === 'MENU'">
-    <div class="addons-card" data-name="Khối nội dung">
+  <!-- Danh mục sản phẩm & Add-on -->
+  <div class="addons-card" data-name="Khối nội dung">
       <div class="card-header-row" data-name="Tiêu đề khối">
         <div class="header-left">
-          <img src="/images/figma/table.svg" alt="" class="card-icon" />
+          <lucide-icon name="table" [size]="18" [strokeWidth]="1.8" color="#4A3123" class="card-icon" aria-hidden="true"></lucide-icon>
           <h2 class="card-title">Danh mục thực đơn &amp; Add-on</h2>
         </div>
         <span class="card-subtitle-info">
@@ -60,7 +39,7 @@
       <div class="card-filters-section" data-name="Bộ lọc sản phẩm">
         <div class="filter-inputs-row" data-name="Tìm kiếm sản phẩm">
           <div class="search-wrap" data-name="Tìm kiếm">
-            <img src="/images/figma/search.svg" alt="" class="search-icon" />
+            <lucide-icon name="search" [size]="16" [strokeWidth]="1.8" color="#4A3123" class="search-icon" aria-hidden="true"></lucide-icon>
             <input
               type="text"
               [value]="searchQuery"
@@ -71,7 +50,7 @@
           </div>
 
           <div class="select-wrap select-status" data-name="Bộ lọc trạng thái">
-            <img src="/images/figma/filter.svg" alt="" class="filter-icon" />
+            <lucide-icon name="filter" [size]="16" [strokeWidth]="1.8" color="#4A3123" class="filter-icon" aria-hidden="true"></lucide-icon>
             <select
               [value]="selectedStatusFilter"
               (change)="selectedStatusFilter = $any($event.target).value; currentPage = 1"
@@ -82,7 +61,7 @@
               <option value="Tạm ngưng">Tạm ngưng</option>
               <option value="Hết hàng">Hết hàng</option>
             </select>
-            <img src="/images/figma/chevron-down.svg" alt="" class="select-arrow" />
+            <lucide-icon name="chevron-down" [size]="16" [strokeWidth]="1.8" color="#4A3123" class="select-arrow" aria-hidden="true"></lucide-icon>
           </div>
 
           <div class="select-wrap select-category" data-name="Bộ lọc nhóm">
@@ -94,7 +73,7 @@
               <option value="Tất cả">Nhóm: Tất cả</option>
               <option *ngFor="let cat of categoryOptions" [value]="cat">{{ cat }}</option>
             </select>
-            <img src="/images/figma/chevron-down.svg" alt="" class="select-arrow" />
+            <lucide-icon name="chevron-down" [size]="16" [strokeWidth]="1.8" color="#4A3123" class="select-arrow" aria-hidden="true"></lucide-icon>
           </div>
         </div>
 
@@ -243,7 +222,7 @@
     <div id="addon-editor-panel" class="addons-card product-form-card" data-name="Form sản phẩm">
       <div class="card-header-row">
         <div class="header-left">
-          <img src="/images/figma/icon-info.svg" alt="" class="card-icon" />
+          <lucide-icon name="info" [size]="18" [strokeWidth]="1.8" color="#4A3123" class="card-icon" aria-hidden="true"></lucide-icon>
           <h2 class="card-title">
             {{ isCreating ? 'Thêm mới sản phẩm & Add-on' : 'Chi tiết sản phẩm · ' + (selectedProduct?.code || '') }}
           </h2>
@@ -261,9 +240,9 @@
         <div class="col-photo-section">
           <div class="product-photo-box">
             <img
-              [src]="formData.image || '/images/ken-flow/coffee.png'"
+              [src]="formData.image || '/images/addons/cf-den.png'"
               [alt]="formData.name"
-              (error)="$any($event.target).src = '/images/ken-flow/coffee.png'"
+              (error)="$any($event.target).src = '/images/addons/cf-den.png'"
               class="product-photo-img"
             />
           </div>
@@ -325,7 +304,7 @@
                 >
                   <option *ngFor="let u of unitOptions" [value]="u">{{ u }}</option>
                 </select>
-                <img src="/images/figma/chevron-down.svg" alt="" class="field-arrow" />
+                <lucide-icon name="chevron-down" [size]="16" [strokeWidth]="1.8" color="#4A3123" class="field-arrow" aria-hidden="true"></lucide-icon>
               </div>
             </div>
           </div>
@@ -341,7 +320,7 @@
                 >
                   <option *ngFor="let c of categoryOptions" [value]="c">{{ c }}</option>
                 </select>
-                <img src="/images/figma/chevron-down.svg" alt="" class="field-arrow" />
+                <lucide-icon name="chevron-down" [size]="16" [strokeWidth]="1.8" color="#4A3123" class="field-arrow" aria-hidden="true"></lucide-icon>
               </div>
             </div>
 
@@ -356,7 +335,7 @@
                   <option value="true">Có · Hiển thị</option>
                   <option value="false">Không · Ẩn</option>
                 </select>
-                <img src="/images/figma/chevron-down.svg" alt="" class="field-arrow" />
+                <lucide-icon name="chevron-down" [size]="16" [strokeWidth]="1.8" color="#4A3123" class="field-arrow" aria-hidden="true"></lucide-icon>
               </div>
             </div>
           </div>
@@ -372,7 +351,7 @@
                 >
                   <option *ngFor="let a of availabilityOptions" [value]="a">{{ a }}</option>
                 </select>
-                <img src="/images/figma/chevron-down.svg" alt="" class="field-arrow" />
+                <lucide-icon name="chevron-down" [size]="16" [strokeWidth]="1.8" color="#4A3123" class="field-arrow" aria-hidden="true"></lucide-icon>
               </div>
             </div>
           </div>
@@ -453,72 +432,4 @@
         </div>
       </div>
     </div>
-  </ng-container>
-
-  <!-- ==================== TAB 2: CẤU HÌNH HỖ TRỢ ĐỒ UỐNG 50.000đ & GÓI ĐI KÈM ==================== -->
-  <ng-container *ngIf="mainTab === 'CONFIG'">
-    <div class="addons-card">
-      <div class="card-header-row">
-        <div class="header-left">
-          <img src="/images/figma/icon-info.svg" alt="" class="card-icon" />
-          <h2 class="card-title">Bảng tính hỗ trợ đồ uống 50.000đ theo gói dịch vụ</h2>
-        </div>
-        <button type="button" class="btn-outline-status" (click)="goToPackages()">Mở Gói dịch vụ ↗</button>
-      </div>
-
-      <p class="config-explain">
-        Khi khách đặt gói có bao gồm đồ uống tiêu chuẩn, hệ thống hỗ trợ tối đa <strong>50.000đ/món</strong>.
-        Nếu khách chọn đồ uống có giá cao hơn, phần chênh lệch được cộng tự động vào phụ thu gói và giữ cố định trong đơn đặt chỗ.
-      </p>
-
-      <div class="table-responsive">
-        <table class="addons-table">
-          <thead>
-            <tr class="thead-row">
-              <th>Mã món</th>
-              <th>Đồ uống</th>
-              <th>Giá bán lẻ</th>
-              <th>Hỗ trợ từ gói</th>
-              <th>Phụ thu (Surcharge)</th>
-              <th>Trạng thái</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let d of paginatedDrinkProducts" class="trow-item" tabindex="0" (click)="mainTab = 'MENU'; selectProduct(d, true)" (keydown.enter)="mainTab = 'MENU'; selectProduct(d, true)">
-              <td><span class="product-code">{{ d.code }}</span></td>
-              <td><span class="product-title">{{ d.name }}</span></td>
-              <td>{{ formatPrice(d.price) }}</td>
-              <td class="text-green font-bold">−{{ formatPrice(Math.min(d.price, drinkSubsidy)) }}</td>
-              <td class="font-bold">
-                {{ drinkSurcharge(d.price) > 0 ? '+' + formatPrice(drinkSurcharge(d.price)) : '0đ (Miễn phụ thu)' }}
-              </td>
-              <td>
-                <span class="badge-status" [class.status-active]="d.status === 'ACTIVE'" [class.status-paused]="d.status === 'PAUSED'">
-                  {{ d.status === 'ACTIVE' ? 'Đang áp dụng' : 'Tạm ngưng' }}
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="table-footer-bar" *ngIf="drinkTotalPages > 1">
-        <span class="footer-summary">
-          Trang {{ drinkPage }} / {{ drinkTotalPages }} ({{ drinkProducts.length }} đồ uống)
-        </span>
-        <div class="admin-pagination-controls">
-          <button type="button" class="btn-page-nav" [disabled]="drinkPage <= 1" (click)="goToDrinkPage(drinkPage - 1)">‹ Trước</button>
-          <button
-            *ngFor="let page of drinkPageNumbers"
-            type="button"
-            class="btn-page-num"
-            [class.active]="page === drinkPage"
-            (click)="goToDrinkPage(page)"
-          >
-            {{ page }}
-          </button>
-          <button type="button" class="btn-page-nav" [disabled]="drinkPage >= drinkTotalPages" (click)="goToDrinkPage(drinkPage + 1)">Tiếp ›</button>
-        </div>
-      </div>
-    </div>
-  </ng-container>
 </div>

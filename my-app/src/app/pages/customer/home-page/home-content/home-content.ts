@@ -12,6 +12,7 @@ interface KenHomeSpace {
   thumb: string;
   images: string[];
   route: string | null;
+  bookingRoute?: string | null;
 }
 
 @Component({
@@ -37,16 +38,16 @@ export class KenHomeContent implements OnInit, OnDestroy {
   ];
 
   readonly advantages = [
-    { symbol: '/images/ken-home/icons/quiet.svg', title: 'Yên Tĩnh', description: 'Không gian tách biệt khỏi tiếng ồn phố thị, để bạn tập trung trọn vẹn.' },
-    { symbol: '/images/ken-home/icons/private.svg', title: 'Riêng Tư', description: 'Cabin và phòng riêng có rèm che, giữ trọn khoảng không của riêng bạn.' },
-    { symbol: '/images/ken-home/icons/flexible.svg', title: 'Linh Động', description: 'Đặt theo giờ hoặc theo combo cố định, bạn là người quyết định.' },
-    { symbol: '/images/ken-home/icons/transparent.svg', title: 'Minh Bạch', description: 'Giá niêm yết rõ ràng, lưu vết tại thời điểm đặt, không phát sinh.' }
+    { symbol: 'mic-off', title: 'Yên Tĩnh', description: 'Không gian tách biệt khỏi tiếng ồn phố thị, để bạn tập trung trọn vẹn.' },
+    { symbol: 'lock', title: 'Riêng Tư', description: 'Cabin và phòng riêng có rèm che, giữ trọn khoảng không của riêng bạn.' },
+    { symbol: 'alarm-clock', title: 'Linh Động', description: 'Đặt theo giờ hoặc theo combo cố định, bạn là người quyết định.' },
+    { symbol: 'tag', title: 'Minh Bạch', description: 'Giá niêm yết rõ ràng, lưu vết tại thời điểm đặt, không phát sinh.' }
   ];
 
   readonly mascots = [
     { title: 'Trò chuyện', label: 'KÉN KẾT NỐI', image: '/images/ken-home/mascot-connect.png', description: 'Một nơi ấm áp để gặp gỡ, trò chuyện và nạp năng lượng bằng một ly đồ uống ngon.', route: '/spaces/connect' },
     { title: 'Làm việc', label: 'KÉN TẬP TRUNG', image: '/images/ken-home/mascot-focus.png', description: 'Một góc yên tĩnh để hoàn thành điều còn dang dở mà không bị làm phiền.', route: '/spaces/work-lounge' },
-    { title: 'Nghỉ ngơi', label: 'KÉN TÁI TẠO', image: '/images/ken-home/mascot-rest.png', description: 'Một khoảng nghỉ đủ sâu để cơ thể và tâm trí phục hồi, sẵn sàng cho ngày mới.', route: '/spaces' }
+    { title: 'Nghỉ ngơi', label: 'KÉN TÁI TẠO', image: '/images/ken-home/mascot-rest.png', description: 'Một khoảng nghỉ đủ sâu để cơ thể và tâm trí phục hồi, sẵn sàng cho ngày mới.', route: '/spaces/booking/single' }
   ];
 
   readonly steps = [
@@ -57,26 +58,26 @@ export class KenHomeContent implements OnInit, OnDestroy {
   ];
 
   readonly spaces: KenHomeSpace[] = [
-    { label: 'KÉN Café', privacy: 'CỞI MỞ NHẤT', heading: 'KÉN Café', description: 'Khu vực mở như một quán cà phê quen thuộc: nơi bạn hẹn bạn bè, đọc sách hoặc ngồi làm việc nhẹ. Không giới hạn thời gian, không cần đặt trước cứ ghé và chọn một góc.', benefits: ['Cà phê & bánh ngọt', 'Gặp gỡ, trò chuyện'], thumb: '/images/ken-home/privacy-cafe.png', images: ['/images/ken-home/cafe-1.png','/images/ken-home/cafe-2.png','/images/ken-home/cafe-3.png','/images/ken-home/cafe-4.png'], route: '/spaces/connect' },
-    { label: 'Bàn chung', privacy: 'KHÁ RIÊNG TƯ', heading: 'Bàn chung', description: 'Bàn dài và ánh sáng vừa đủ, Wi-Fi và ổ cắm điện để học bài, làm việc độc lập. Đặt theo người và thời lượng sử dụng.', benefits: ['Wi-Fi & ổ cắm', 'Làm việc linh hoạt'], thumb: '/images/ken-home/privacy-work.png', images: ['/images/ken-home/privacy-work.png','/images/ken-home/about-work.png'], route: '/spaces/work-lounge' },
-    { label: 'Phòng họp nhỏ', privacy: 'RIÊNG TƯ', heading: 'Phòng họp nhỏ', description: 'Phòng họp riêng cho nhóm 3–6 người, trang bị máy chiếu, bảng từ và Wi-Fi, phù hợp học nhóm hoặc thảo luận dự án.', benefits: ['3–6 khách', 'Máy chiếu & bảng từ'], thumb: '/images/ken-home/privacy-meeting.png', images: ['/images/ken-home/privacy-meeting.png','/images/ken-home/about-meeting.png'], route: '/spaces/small-meeting-room' },
-    { label: 'KÉN nghỉ đơn', privacy: 'RIÊNG TƯ CAO', heading: 'KÉN nghỉ đơn', description: 'Một chiếc kén nhỏ có giường nằm, rèm che và ổ cắm điện để bạn nghỉ ngắn, tái tạo năng lượng giữa ngày.', benefits: ['Dành cho 1 khách', 'Nghỉ ngắn theo giờ'], thumb: '/images/ken-home/privacy-single.png', images: ['/images/ken-home/privacy-single.png','/images/ken-home/about-rest.png'], route: '/spaces' },
-    { label: 'Kén đôi', privacy: 'RIÊNG TƯ NHẤT', heading: 'KÉN nghỉ đôi', description: 'Không gian nghỉ riêng cho hai người, yên tĩnh và thoải mái, phù hợp những khoảng nghỉ ngắn trong ngày.', benefits: ['1–2 khách', 'Kén nghỉ riêng'], thumb: '/images/ken-home/privacy-double.png', images: ['/images/ken-home/privacy-double.png','/images/ken-home/about-rest.png'], route: '/spaces' }
+    { label: 'KÉN Café', privacy: 'CỞI MỞ NHẤT', heading: 'KÉN Café', description: 'Khu vực mở như một quán cà phê quen thuộc: nơi bạn hẹn bạn bè, đọc sách hoặc ngồi làm việc nhẹ. Không giới hạn thời gian, không cần đặt trước cứ ghé và chọn một góc.', benefits: ['Cà phê & bánh ngọt', 'Gặp gỡ, trò chuyện'], thumb: '/images/ken-home/privacy-cafe.png', images: ['/images/ken-home/cafe-1.png','/images/ken-home/cafe-2.png','/images/ken-home/cafe-3.png','/images/ken-home/cafe-4.png'], route: '/spaces/connect', bookingRoute: null },
+    { label: 'Bàn chung', privacy: 'KHÁ RIÊNG TƯ', heading: 'Bàn chung', description: 'Bàn dài và ánh sáng vừa đủ, Wi-Fi và ổ cắm điện để học bài, làm việc độc lập. Đặt theo người và thời lượng sử dụng.', benefits: ['Wi-Fi & ổ cắm', 'Làm việc linh hoạt'], thumb: '/images/ken-home/privacy-work.png', images: ['/images/ken-home/privacy-work.png','/images/ken-home/about-work.png'], route: '/spaces/work-lounge', bookingRoute: '/booking/work' },
+    { label: 'Phòng họp nhỏ', privacy: 'RIÊNG TƯ', heading: 'Phòng họp nhỏ', description: 'Phòng họp riêng cho nhóm 3–6 người, trang bị máy chiếu, bảng từ và Wi-Fi, phù hợp học nhóm hoặc thảo luận dự án.', benefits: ['3–6 khách', 'Máy chiếu & bảng từ'], thumb: '/images/ken-home/privacy-meeting.png', images: ['/images/ken-home/privacy-meeting.png','/images/ken-home/about-meeting.png'], route: '/spaces/small-meeting-room', bookingRoute: '/booking/meeting-small' },
+    { label: 'KÉN nghỉ đơn', privacy: 'RIÊNG TƯ CAO', heading: 'KÉN nghỉ đơn', description: 'Một chiếc kén nhỏ có giường nằm, rèm che và ổ cắm điện để bạn nghỉ ngắn, tái tạo năng lượng giữa ngày.', benefits: ['Dành cho 1 khách', 'Nghỉ ngắn theo giờ'], thumb: '/images/ken-home/privacy-single.png', images: ['/images/ken-home/privacy-single.png','/images/ken-home/about-rest.png'], route: '/spaces/booking/single', bookingRoute: '/booking/single' },
+    { label: 'Kén đôi', privacy: 'RIÊNG TƯ NHẤT', heading: 'KÉN nghỉ đôi', description: 'Không gian nghỉ riêng cho hai người, yên tĩnh và thoải mái, phù hợp những khoảng nghỉ ngắn trong ngày.', benefits: ['1–2 khách', 'Kén nghỉ riêng'], thumb: '/images/ken-home/privacy-double.png', images: ['/images/ken-home/privacy-double.png','/images/ken-home/about-rest.png'], route: '/spaces/booking/double', bookingRoute: '/booking/double' }
   ];
 
   readonly prices = [
-    { eyebrow: 'KÉN TẬP TRUNG · GÓI LINH HOẠT', title: 'Bàn chung', icon: '/images/ken-home/icons/price-laptop.svg', price: '30.000đ', sub: 'mỗi người / giờ · tối thiểu 1 giờ', items: ['Wi-Fi, ổ cắm điện, bàn làm việc chung', 'Từ 2 giờ: mỗi khách 01 chai nước suối', 'Gói Nửa ngày (4 giờ): 90.000đ/người', 'Gói 4 giờ: 01 đồ uống tiêu chuẩn/khách'], note: 'Giá tính theo người; nước suối của gói giờ chỉ áp dụng khi đặt từ 2 giờ.', route: '/spaces/work-lounge', featured: false },
-    { eyebrow: 'KÉN TẬP TRUNG · HỌP NHÓM NHỎ (3 GIỜ)', title: 'Phòng họp nhỏ', icon: '/images/ken-home/icons/price-door.svg', price: '250.000đ', sub: 'mỗi không gian / gói 3 giờ · 3–6 người', items: ['Không gian riêng cho nhóm 3–6 người', 'Bao gồm máy chiếu', 'Bao gồm bảng từ và Wi-Fi', 'Mỗi khách 01 chai nước suối'], note: 'Phù hợp họp nhóm, học nhóm.', route: '/spaces/small-meeting-room', featured: true },
-    { eyebrow: 'KÉN TÁI TẠO · KÉN RIÊNG', title: 'KÉN nghỉ đơn', icon: '/images/ken-home/icons/price-moon.svg', price: '70.000đ', sub: 'mỗi kén / gói Nghỉ nhanh 1 giờ · 1 khách', items: ['Giường nằm đơn, ổ cắm điện', 'Gói 1 giờ: không bao gồm F&B', 'Gói Ngả lưng (2 giờ): 130.000đ/kén', 'Gói 2 giờ: 01 đồ uống tiêu chuẩn/khách'], note: '15 phút dọn sau giờ sử dụng, không tính trong gói.', route: '/spaces', featured: false }
+    { eyebrow: 'KÉN TẬP TRUNG · GÓI LINH HOẠT', title: 'Bàn chung', icon: 'laptop', price: '30.000đ', sub: 'mỗi người / giờ · tối thiểu 1 giờ', items: ['Wi-Fi, ổ cắm điện, bàn làm việc chung', 'Từ 2 giờ: mỗi khách 01 chai nước suối', 'Gói Nửa ngày (4 giờ): 90.000đ/người', 'Gói 4 giờ: 01 đồ uống tiêu chuẩn/khách'], note: 'Giá tính theo người; nước suối của gói giờ chỉ áp dụng khi đặt từ 2 giờ.', route: '/booking/work', featured: false },
+    { eyebrow: 'KÉN TẬP TRUNG · HỌP NHÓM NHỎ (3 GIỜ)', title: 'Phòng họp nhỏ', icon: 'door-closed', price: '250.000đ', sub: 'mỗi không gian / gói 3 giờ · 3–6 người', items: ['Không gian riêng cho nhóm 3–6 người', 'Bao gồm máy chiếu', 'Bao gồm bảng từ và Wi-Fi', 'Mỗi khách 01 chai nước suối'], note: 'Phù hợp họp nhóm, học nhóm.', route: '/booking/meeting-small', featured: true },
+    { eyebrow: 'KÉN TÁI TẠO · KÉN RIÊNG', title: 'KÉN nghỉ đơn', icon: 'moon', price: '70.000đ', sub: 'mỗi kén / gói Nghỉ nhanh 1 giờ · 1 khách', items: ['Giường nằm đơn, ổ cắm điện', 'Gói 1 giờ: không bao gồm F&B', 'Gói Ngả lưng (2 giờ): 130.000đ/kén', 'Gói 2 giờ: 01 đồ uống tiêu chuẩn/khách'], note: '15 phút dọn sau giờ sử dụng, không tính trong gói.', route: '/booking/single', featured: false }
   ];
 
   readonly addons = [
-    { name: 'Americano', price: '40.000đ', icon: '/images/ken-home/icons/addon-coffee.svg' },
-    { name: 'Matcha Latte / Hojicha Latte', price: '55.000đ', icon: '/images/ken-home/icons/addon-leaf.svg' },
-    { name: 'Bánh sừng bò (Croissant) cơ bản', price: '35.000đ', icon: '/images/ken-home/icons/addon-croissant.svg' },
-    { name: 'Bộ nghỉ ngơi (bịt mắt, nút tai)', price: '20.000đ', icon: '/images/ken-home/icons/addon-headphones.svg' },
-    { name: 'Chăn mỏng thêm', price: '15.000đ', icon: '/images/ken-home/icons/addon-blanket.svg' },
-    { name: 'Khăn ấm', price: '10.000đ', icon: '/images/ken-home/icons/addon-hand.svg' }
+    { name: 'Americano', price: '40.000đ', icon: 'coffee' },
+    { name: 'Matcha Latte / Hojicha Latte', price: '55.000đ', icon: 'leaf' },
+    { name: 'Bánh sừng bò (Croissant) cơ bản', price: '35.000đ', icon: 'croissant' },
+    { name: 'Bộ nghỉ ngơi (bịt mắt, nút tai)', price: '20.000đ', icon: 'headphones' },
+    { name: 'Chăn mỏng thêm', price: '15.000đ', icon: 'bed-single' },
+    { name: 'Khăn ấm', price: '10.000đ', icon: 'hand' }
   ];
 
   readonly gallery = ['moments-8.png', 'moments-7.png', 'moments-6.png', 'moments-5.png', 'moments-4.png', 'moments-3.png', 'moments-2.png', 'moments-1.png'];
@@ -105,16 +106,41 @@ export class KenHomeContent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.suggestionPopup.showOncePerSession();
-    this.slideTimer = setInterval(() => this.heroIndex = (this.heroIndex + 1) % this.slides.length, 6500);
+    this.resumeSlide();
   }
 
   ngOnDestroy(): void {
-    if (this.slideTimer) clearInterval(this.slideTimer);
+    this.pauseSlide();
   }
 
   setSlide(index: number): void {
     this.heroIndex = index;
     this.smoothScroll.animateSlideTransition();
+  }
+
+  nextSlide(): void {
+    this.heroIndex = (this.heroIndex + 1) % this.slides.length;
+    this.smoothScroll.animateSlideTransition();
+  }
+
+  prevSlide(): void {
+    this.heroIndex = (this.heroIndex - 1 + this.slides.length) % this.slides.length;
+    this.smoothScroll.animateSlideTransition();
+  }
+
+  pauseSlide(): void {
+    if (this.slideTimer) {
+      clearInterval(this.slideTimer);
+      this.slideTimer = undefined;
+    }
+  }
+
+  resumeSlide(): void {
+    if (!this.slideTimer) {
+      this.slideTimer = setInterval(() => {
+        this.nextSlide();
+      }, 5000);
+    }
   }
 
   selectSpace(index: number): void {
@@ -133,6 +159,7 @@ export class KenHomeContent implements OnInit, OnDestroy {
       this.submittedMessage = 'Vui lòng kiểm tra và điền đầy đủ thông tin hợp lệ.';
       return;
     }
-    this.submittedMessage = 'Thông tin đã hợp lệ. Chức năng gửi yêu cầu đến KÉN đang chờ kết nối máy chủ; chưa có yêu cầu nào được gửi.';
+    this.submittedMessage = 'Cảm ơn bạn! Yêu cầu tư vấn đã được gửi thành công. Đội ngũ KÉN sẽ liên hệ với bạn trong thời gian sớm nhất.';
+    this.consultation.reset();
   }
 }

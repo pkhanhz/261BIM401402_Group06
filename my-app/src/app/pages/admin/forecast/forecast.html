@@ -39,7 +39,7 @@
         <label>
           <span>Từ ngày</span>
           <div class="date-input">
-            <img src="/images/figma/calendar-date.svg" alt="" />
+            <lucide-icon name="calendar" [size]="16" [strokeWidth]="1.8" color="#4A3123"></lucide-icon>
             <input type="date" [value]="fromDate" (change)="onDateChange('fromDate', $event)" />
           </div>
         </label>
@@ -47,7 +47,7 @@
         <label>
           <span>Đến ngày</span>
           <div class="date-input">
-            <img src="/images/figma/calendar-date.svg" alt="" />
+            <lucide-icon name="calendar" [size]="16" [strokeWidth]="1.8" color="#4A3123"></lucide-icon>
             <input type="date" [value]="toDate" (change)="onDateChange('toDate', $event)" />
           </div>
         </label>
@@ -101,7 +101,7 @@
       <section class="forecast-card trend-card">
         <div class="section-heading">
           <h2>
-            <img src="/images/figma/table.svg" alt="" /> Xu hướng tiêu thụ thực tế gần đây
+            <lucide-icon name="table" [size]="18" [strokeWidth]="1.8" color="#4A3123"></lucide-icon> Xu hướng tiêu thụ thực tế gần đây
           </h2>
           <p>
             <span class="legend actual"></span> Tổng số lượng món bán ra theo ngày (từ lịch sử giao
@@ -129,7 +129,7 @@
 
       <section class="forecast-card plan-card">
         <div class="section-heading plan-heading">
-          <h2><img src="/images/figma/table.svg" alt="" /> Kế hoạch chuẩn bị theo món</h2>
+          <h2><lucide-icon name="table" [size]="18" [strokeWidth]="1.8" color="#4A3123"></lucide-icon> Kế hoạch chuẩn bị theo món</h2>
           <small>
             Khoảng {{ formatDateVi(fromDate) }} – {{ formatDateVi(toDate) }} ·
             {{ filteredDishes.length }} / {{ dishes.length }} món
@@ -138,7 +138,7 @@
 
         <div class="plan-filters">
           <label class="plan-search">
-            <img src="/images/figma/search.svg" alt="" />
+            <lucide-icon name="search" [size]="16" [strokeWidth]="1.8" color="#4A3123"></lucide-icon>
             <input
               type="text"
               [value]="search"
@@ -167,7 +167,7 @@
                 <th>Tên món &amp; Phân loại</th>
                 <th>Dự báo tiêu thụ</th>
                 <th>Khoảng tin cậy [Min–Max]</th>
-                <th>Mô hình / Đề xuất</th>
+                <th>Hành động đề xuất</th>
               </tr>
             </thead>
             <tbody>
@@ -188,15 +188,11 @@
                   <strong>{{ item.predictedQty | number }} phần</strong>
                 </td>
                 <td>{{ item.lowerQty | number }} – {{ item.upperQty | number }} phần</td>
-                <td [class.action-up]="item.predictedQty >= 50">
-                  <strong>{{ item.modelVersion }}</strong>
-                  <small>
-                    {{
-                      item.upperQty > item.predictedQty * 1.3
-                        ? 'Biên độ dao động cao · Dự phòng thêm'
-                        : 'Chuẩn bị theo mức dự báo chuẩn'
-                    }}
-                  </small>
+                <td
+                  [class.action-up]="item.actionTag === 'Tăng lượng'"
+                  [class.action-down]="item.actionTag === 'Giảm lượng'"
+                >
+                  <strong>{{ item.actionTag }}</strong>
                 </td>
               </tr>
               <tr *ngIf="filteredDishes.length === 0">
@@ -228,7 +224,7 @@
           <div class="dish-detail-grid">
             <div><span>Dự báo tiêu thụ</span><strong>{{ sd.predictedQty | number }} phần</strong></div>
             <div><span>Khoảng tin cậy</span><strong>{{ sd.lowerQty | number }} – {{ sd.upperQty | number }} phần</strong></div>
-            <div><span>Mô hình</span><strong>{{ sd.modelVersion }}</strong></div>
+            <div><span>Hành động đề xuất</span><strong>{{ sd.actionTag }}</strong></div>
             <div><span>Ngày dự báo</span><strong>{{ formatDateVi(sd.forecastDate) }}</strong></div>
           </div>
         </div>
@@ -257,7 +253,7 @@
         <div class="section-heading alerts-heading">
           <div>
             <h2>
-              <img src="/images/figma/icon-info.svg" alt="" /> Cảnh báo Tồn kho Safety Stock
+              <lucide-icon name="info" [size]="16" [strokeWidth]="1.8" color="#4A3123"></lucide-icon> Cảnh báo Tồn kho Safety Stock
               ({{ alerts.length }})
             </h2>
             <small>Xác nhận hoặc đánh dấu đã xử lý sau khi nhập bổ sung nguyên liệu.</small>
@@ -313,7 +309,7 @@
       <section class="forecast-card">
         <div class="section-heading ing-heading">
           <div>
-            <h2><img src="/images/figma/icon-pkg.svg" alt="" /> Dự báo Nguyên vật liệu &amp; Nhập kho</h2>
+            <h2><lucide-icon name="tag" [size]="16" [strokeWidth]="1.8" color="#4A3123"></lucide-icon> Dự báo Nguyên vật liệu &amp; Nhập kho</h2>
             <small>Quy đổi từ kế hoạch món qua công thức (Recipes) để đề xuất nhập hàng.</small>
           </div>
           <div class="ing-filter-pills">
@@ -496,7 +492,7 @@
       <section class="forecast-card">
         <div class="section-heading">
           <h2>
-            <img src="/images/figma/sparkles.svg" alt="" /> Cặp món &amp; Add-on thường được đặt
+            <lucide-icon name="sparkles" [size]="16" [strokeWidth]="1.8" color="#4A3123"></lucide-icon> Cặp món &amp; Add-on thường được đặt
             cùng nhau (Co-occurrence)
           </h2>
           <small>Chỉ số Support, Confidence và Lift đo mức độ liên kết giữa hai sản phẩm.</small>
@@ -563,21 +559,27 @@
       <section class="recommend-bottom-grid">
         <article class="forecast-card">
           <div class="section-heading">
-            <h2><img src="/images/figma/table.svg" alt="" /> Top Trending Add-on &amp; Món bán chạy</h2>
+            <h2><lucide-icon name="table" [size]="18" [strokeWidth]="1.8" color="#4A3123"></lucide-icon> Top Trending Add-on &amp; Món bán chạy</h2>
             <small>Xếp hạng theo sản lượng thực tế cho Pop-up gợi ý.</small>
           </div>
           <div class="cluster-list">
             <div *ngFor="let t of paged('trend', topTrending); let idx = index" class="trending-row">
               <div class="trending-left">
-                <span class="rank-circle">{{ pageFrom('trend', topTrending.length) + idx }}</span>
+                <span class="rank-circle">{{ t.rank || (pageFrom('trend', topTrending.length) + idx) }}</span>
                 <div>
                   <strong>{{ t.name }}</strong>
                   <small>{{ t.code }} · {{ categoryLabel(t.category) }}</small>
                 </div>
               </div>
               <div class="trending-right">
-                <strong>{{ t.qty | number }} lượt</strong>
-                <small>{{ formatCurrency(t.revenueVnd) }}</small>
+                <ng-container *ngIf="t.trendingScore; else qtyFallback">
+                  <strong>Điểm: {{ t.trendingScore | number: '1.2-4' }}</strong>
+                  <small>{{ t.qty ? (t.qty | number) + ' lượt' : 'ml_global_trending' }}</small>
+                </ng-container>
+                <ng-template #qtyFallback>
+                  <strong>{{ t.qty | number }} lượt</strong>
+                  <small>{{ formatCurrency(t.revenueVnd) }}</small>
+                </ng-template>
               </div>
             </div>
             <div *ngIf="topTrending.length === 0" class="empty-box">Chưa có dữ liệu Top Trending.</div>
@@ -604,18 +606,18 @@
 
         <article class="forecast-card">
           <div class="section-heading">
-            <h2><img src="/images/figma/sparkles.svg" alt="" /> Phân khúc Khách hàng ML Clusters</h2>
+            <h2><lucide-icon name="sparkles" [size]="16" [strokeWidth]="1.8" color="#4A3123"></lucide-icon> Phân khúc Khách hàng ML Clusters</h2>
             <small>Nhóm hành vi dùng để cá nhân hóa gợi ý tại bước Booking Menu.</small>
           </div>
           <div class="cluster-list">
             <div *ngFor="let cl of clusters" class="cluster-box">
               <div class="cluster-head">
-                <strong>{{ cl.name }}</strong>
+                <strong>{{ cl.persona_name || cl.name }}</strong>
                 <span class="date-pill">{{ cl.size }} thành viên</span>
               </div>
               <div class="cluster-items">
                 <span *ngFor="let ci of cl.items" class="cluster-chip">
-                  {{ ci.name }} ({{ ci.score | number: '1.2-2' }})
+                  {{ ci.name }}<ng-container *ngIf="ci.score > 0"> ({{ ci.score | number: '1.2-2' }})</ng-container>
                 </span>
               </div>
             </div>

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { KenBookingState, kenMoney } from '../booking-state';
+import { KenBookingState, KenProduct, kenMoney } from '../booking-state';
 
 @Component({ selector: 'app-ken-drink-picker', standalone: false, templateUrl: './drink-picker.html', styleUrl: './drink-picker.css' })
 export class KenDrinkPickerPage {
@@ -14,7 +14,30 @@ export class KenDrinkPickerPage {
     public state: KenBookingState,
     private router: Router,
     private route: ActivatedRoute,
-  ) {}
+  ) {
+    this.state.loadClusterRecommendations(true);
+  }
+  get recommendedDrinks() { return this.state.clusterRecInclusionDrinks; }
+  get recommendedItems(): KenProduct[] {
+    if (this.state.requiredPastryCount > 0) {
+      const out: KenProduct[] = [...this.state.clusterRecInclusionDrinks];
+      for (const p of this.state.clusterRecInclusionPastries) {
+        if (!out.some(x => x.id === p.id)) out.push(p);
+      }
+      return out;
+    }
+    return this.state.clusterRecInclusionDrinks;
+  }
+  canAddRecommended(item: KenProduct): boolean {
+    return this.state.canAddInclusionItem(item);
+  }
+  recommendedQty(item: KenProduct): number {
+    return this.state.inclusionItemQuantity(item);
+  }
+  addRecommended(item: KenProduct): void {
+    this.state.addInclusionItem(item, 1);
+    this.feedback = '';
+  }
   get filteredDrinks() {
     let arr = this.state.drinks.filter(d =>
       (this.category === 'all' || d.category === this.category) &&

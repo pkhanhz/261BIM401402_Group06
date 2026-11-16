@@ -28,8 +28,27 @@ export class AccountSidebar {
   @Input() points?: string;
   @Output() logout = new EventEmitter<void>();
 
+  showLogoutConfirm = false;
+
+  get isAuthenticated(): boolean {
+    return !!this.auth?.isAuthenticated;
+  }
+
   get displayName(): string {
-    return this.userName ?? this.auth?.user?.fullName ?? 'Thầy Thanh đẹp trai';
+    return this.userName ?? this.auth?.user?.fullName ?? 'Khách hàng';
+  }
+
+  requestLogout(): void {
+    this.showLogoutConfirm = true;
+  }
+
+  cancelLogout(): void {
+    this.showLogoutConfirm = false;
+  }
+
+  confirmLogout(): void {
+    this.showLogoutConfirm = false;
+    this.logout.emit();
   }
 
   get displayTier(): string {
@@ -55,7 +74,7 @@ export class AccountSidebar {
   readonly items: SidebarItem[] = [
     { key: 'points',     label: 'KÉN Điểm',        path: '/points-tier',       icon: 'sparkles' },
     { key: 'coins',      label: 'KÉN Coins',       path: '/coins-rewards',     icon: 'coins' },
-    { key: 'bookings',   label: 'Lịch sử đặt chỗ', path: '/booking-list',      icon: 'lich-dat-cho' },
+    { key: 'bookings',   label: 'Lịch sử đặt chỗ', path: '/booking-list',      icon: 'calendar-check' },
     { key: 'reschedule', label: 'Đổi / Huỷ lịch',  path: '/booking-reschedule', icon: 'calendar-clock' },
     { key: 'account',    label: 'Tài khoản',       path: '/user-profile',      icon: 'user-round' },
   ];
